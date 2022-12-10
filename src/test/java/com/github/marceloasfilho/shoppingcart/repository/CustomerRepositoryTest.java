@@ -51,7 +51,8 @@ public class CustomerRepositoryTest {
         customer.setEmail("bob@yahoo.com");
 
         // Ação
-        Optional<Customer> customerByEmail = this.customerRepository.findCustomerByEmail(customer.getEmail());
+        Customer save = this.customerRepository.save(customer);
+        Optional<Customer> customerByEmail = this.customerRepository.findCustomerByEmail(save.getEmail());
 
         // Verificação
         assertTrue(customerByEmail.isPresent());
