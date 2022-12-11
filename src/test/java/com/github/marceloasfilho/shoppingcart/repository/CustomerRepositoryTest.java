@@ -20,12 +20,12 @@ public class CustomerRepositoryTest {
     private CustomerRepository customerRepository;
 
     @After
-    public void close(){
+    public void close() {
         this.customerRepository.deleteAll();
     }
 
     @Test
-    public void deveSalvarUmCustomer(){
+    public void deveSalvarUmCustomer() {
         // Cenário
         Customer customer = new Customer();
         customer.setId(1L);
@@ -43,7 +43,7 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    public void deveEncontrarUmCustomerPorEmail(){
+    public void deveEncontrarUmCustomerPorEmail() {
         // Cenário
         Customer customer = new Customer();
         customer.setId(1L);
