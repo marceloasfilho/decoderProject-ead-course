@@ -30,7 +30,7 @@ public class ReserveRepositoryTest {
     }
 
     @Test
-    public void deveObterOrderPeloId() {
+    public void deveObterReservePeloId() {
         // Cenário
         Customer customer = new Customer();
         customer.setId(1L);
@@ -57,11 +57,11 @@ public class ReserveRepositoryTest {
         reserve.setCartItems(List.of(shoppingCart));
 
         // Ação
-        this.reserveRepository.save(reserve);
-        Optional<Reserve> reserveById = this.reserveRepository.findById(reserve.getId());
+        Reserve save = this.reserveRepository.save(reserve);
+        Optional<Reserve> reserveById = this.reserveRepository.findById(save.getId());
 
         // Verificação
         assertTrue(reserveById.isPresent());
-        assertEquals(1L, reserveById.get().getId().longValue());
+        assertEquals("Compras de fim de ano", reserveById.get().getDescription());
     }
 }
