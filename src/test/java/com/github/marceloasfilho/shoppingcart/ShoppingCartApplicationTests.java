@@ -1,10 +1,10 @@
 package com.github.marceloasfilho.shoppingcart;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ShoppingCartApplicationTests {
+public class ShoppingCartApplicationTests {
 
     @Test
     void contextLoads() {
