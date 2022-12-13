@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -44,5 +44,24 @@ public class ProductServiceTest {
         int savedAvailableQuantity = allProducts.get(0).getAvailableQuantity();
         assertEquals(5, savedAvailableQuantity);
         assertFalse(allProducts.isEmpty());
+    }
+
+    @Test
+    public void deveSalvarUmProduto() {
+        // Cenário
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Samsung Galaxy S22 Ultra");
+        product.setPrice(BigDecimal.valueOf(5500.00));
+        product.setAvailableQuantity(5);
+
+        when(this.productRepository.save(any(Product.class))).thenReturn(product);
+
+        // Ação
+        Product savedProduct = this.productService.save(product);
+
+        // Verificação
+        assertNotNull(savedProduct);
+        assertEquals(5, savedProduct.getAvailableQuantity().intValue());
     }
 }
