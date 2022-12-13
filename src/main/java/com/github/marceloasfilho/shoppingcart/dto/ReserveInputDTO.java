@@ -1,11 +1,11 @@
 package com.github.marceloasfilho.shoppingcart.dto;
 
 import com.github.marceloasfilho.shoppingcart.entity.ShoppingCart;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
