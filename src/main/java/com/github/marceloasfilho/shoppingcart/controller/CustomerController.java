@@ -24,7 +24,7 @@ public class CustomerController {
     public ResponseEntity<Response<CustomerDTO>> save(@RequestBody @Valid CustomerDTO customerDTO, BindingResult bindingResult) {
 
         Customer customer = customerDTO.toModel();
-        this.customerService.save(customer);
+        Customer savedCustomer = this.customerService.save(customer);
 
         Response<CustomerDTO> response = new Response<>();
 
@@ -33,6 +33,7 @@ public class CustomerController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
+        customerDTO.setId(savedCustomer.getId());
         response.setData(customerDTO);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);

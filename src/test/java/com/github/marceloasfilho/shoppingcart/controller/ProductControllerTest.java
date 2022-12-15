@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,7 +35,7 @@ public class ProductControllerTest {
     private ProductService productService;
 
     @Test
-    public void deveRetornarCreatedAoSalvarUmCustomer() throws Exception {
+    public void deveRetornarCreatedAoSalvarUmProduct() throws Exception {
         // Cenário
         Product product = new Product();
         product.setId(1L);
@@ -49,7 +50,7 @@ public class ProductControllerTest {
                 .perform(
                         MockMvcRequestBuilders
                                 .post("/product/save")
-                                .content(this.getPayload(product))
+                                .content(this.getSavePayload(product))
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON))
 
@@ -61,7 +62,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void deveRetornarBadRequestAoSalvarUmCustomerInvalido() throws Exception {
+    public void deveRetornarBadRequestAoSalvarUmProductInvalido() throws Exception {
         // Cenário
         Product product = new Product();
         product.setId(1L);
@@ -84,7 +85,33 @@ public class ProductControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    private String getPayload(Product product) throws JsonProcessingException {
+    @Test
+    public void deveRetornarTodosOsProdutos() throws Exception {
+        // Cenário
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Samsung Galaxy S22 Ultra");
+        product.setPrice(BigDecimal.valueOf(5500.00));
+        product.setAvailableQuantity(5);
+
+        when(this.productService.getAllProducts()).thenReturn(List.of(product));
+
+        // Ação
+        this.mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/product/getAllProducts")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+
+                // Verificação
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Samsung Galaxy S22 Ultra"))
+                .andExpect(jsonPath("$[0].availableQuantity").value(5))
+                .andExpect(jsonPath("$[0].price").value(BigDecimal.valueOf(5500.00)));
+    }
+
+    private String getSavePayload(Product product) throws JsonProcessingException {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());

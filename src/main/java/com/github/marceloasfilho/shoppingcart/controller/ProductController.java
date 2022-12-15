@@ -8,11 +8,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/product")
@@ -22,10 +22,11 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping(path = "/save")
+    @Transactional
     public ResponseEntity<Response<ProductDTO>> save(@RequestBody @Valid ProductDTO productDTO, BindingResult bindingResult) {
 
         Product product = productDTO.toModel();
-        this.productService.save(product);
+        Product savedProduct = this.productService.save(product);
 
         Response<ProductDTO> response = new Response<>();
 
@@ -34,7 +35,25 @@ public class ProductController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
+        productDTO.setId(savedProduct.getId());
         response.setData(productDTO);
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/getAllProducts")
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<Product> allProducts = this.productService.getAllProducts();
+
+        List<ProductDTO> savedAllProducts = allProducts.stream().map(product -> {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setId(product.getId());
+            productDTO.setName(product.getName());
+            productDTO.setAvailableQuantity(product.getAvailableQuantity());
+            productDTO.setPrice(product.getPrice());
+            return productDTO;
+        }).toList();
+
+        return new ResponseEntity<>(savedAllProducts, HttpStatus.OK);
     }
 }
