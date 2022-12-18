@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 public class ReserveServiceTest {
     @Autowired
     private ReserveService reserveService;
-
     @MockBean
     private ReserveRepository reserveRepository;
     @MockBean
@@ -65,11 +64,11 @@ public class ReserveServiceTest {
         when(this.reserveRepository.save(any(Reserve.class))).thenReturn(reserve);
 
         // Ação
-        Reserve save = this.reserveService.save(reserve);
+        Reserve saved = this.reserveService.save(reserve);
 
         // Verificação
-        assertNotNull(save);
-        assertEquals("Compras de fim de ano", save.getDescription());
+        assertNotNull(saved);
+        assertEquals("Compras de fim de ano", saved.getDescription());
     }
 
     @Test
@@ -106,7 +105,6 @@ public class ReserveServiceTest {
         BigDecimal cartAmount = this.reserveService.getCartAmount(reserve.getCartItems());
 
         // Verificação
-
         assertEquals(BigDecimal.valueOf(16500.0), cartAmount);
     }
 }

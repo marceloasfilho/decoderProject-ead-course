@@ -3,11 +3,9 @@ package com.github.marceloasfilho.shoppingcart.controller;
 import com.github.marceloasfilho.shoppingcart.dto.ReserveInputDTO;
 import com.github.marceloasfilho.shoppingcart.dto.ReserveOutputDTO;
 import com.github.marceloasfilho.shoppingcart.entity.Customer;
-import com.github.marceloasfilho.shoppingcart.entity.Product;
 import com.github.marceloasfilho.shoppingcart.entity.Reserve;
 import com.github.marceloasfilho.shoppingcart.response.Response;
 import com.github.marceloasfilho.shoppingcart.service.CustomerService;
-import com.github.marceloasfilho.shoppingcart.service.ProductService;
 import com.github.marceloasfilho.shoppingcart.service.ReserveService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,58 +16,34 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @RestController
-@RequestMapping(path = "/cart")
+@RequestMapping(path = "/reserve")
 @RequiredArgsConstructor
 @Slf4j
-public class ShoppingCartController {
-
-    private final ProductService productService;
+public class ReserveController {
     private final ReserveService reserveService;
     private final CustomerService customerService;
 
-    @GetMapping(path = "/getAllProducts")
-    public ResponseEntity<Response<List<Product>>> getAllProducts(BindingResult bindingResult) {
-        List<Product> allProducts = this.productService.getAllProducts();
-
-        Response<List<Product>> response = new Response<>();
-
-        if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-
-        response.setData(allProducts);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/getOrder/{reserveId}")
-    public ResponseEntity<Response<Reserve>> getOrderById(@PathVariable("reserveId") Long reserveId, BindingResult bindingResult) {
+    @GetMapping(path = "/getReserve/{reserveId}")
+    public ResponseEntity<Response<Reserve>> getReserveById(@PathVariable("reserveId") Long reserveId) {
         Optional<Reserve> reserveById = this.reserveService.getReserveById(reserveId);
 
         Response<Reserve> response = new Response<>();
-
-        if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> response.getErrors().add(error.getDefaultMessage()));
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
 
         if (reserveById.isPresent()) {
             response.setData(reserveById.get());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @Transactional
-    @PostMapping(path = "/reserve")
-    public ResponseEntity<Response<ReserveOutputDTO>> reserve(@RequestBody ReserveInputDTO reserveInputDTO, BindingResult bindingResult) {
+    @PostMapping(path = "/save")
+    public ResponseEntity<Response<ReserveOutputDTO>> save(@RequestBody ReserveInputDTO reserveInputDTO, BindingResult bindingResult) {
         log.info("Body Request: " + reserveInputDTO.toString());
 
         ReserveOutputDTO reserveOutputDTO = new ReserveOutputDTO();
