@@ -2,6 +2,7 @@ package com.ead.course.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,13 +20,21 @@ public class LessonModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID lessonId;
+
     @Column(nullable = false, length = 150)
     private String title;
+
     @Column(nullable = false, length = 250)
     private String description;
+
     @Column(nullable = false)
     private String videoUrl;
+
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime creationDateTime;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(optional = false)
+    private ModuleModel module;
 }
