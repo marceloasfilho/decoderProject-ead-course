@@ -24,7 +24,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody @Valid CourseDTO courseDTO) {
+    public ResponseEntity<?> saveCourse(@RequestBody @Valid CourseDTO courseDTO) {
         var courseModel = new CourseModel();
         BeanUtils.copyProperties(courseDTO, courseModel);
         courseModel.setCreationDateTime(LocalDateTime.now(ZoneId.of("UTC")));
@@ -32,8 +32,8 @@ public class CourseController {
         return new ResponseEntity<>(this.courseService.save(courseModel), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/{courseId}")
-    public ResponseEntity<?> delete(@PathVariable(value = "courseId") UUID courseId) {
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<?> deleteCourse(@PathVariable(value = "courseId") UUID courseId) {
         Optional<CourseModel> courseModel = this.courseService.findById(courseId);
         if (courseModel.isEmpty()) {
             return new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND);
@@ -42,8 +42,8 @@ public class CourseController {
         return new ResponseEntity<>("Course deleted successfully", HttpStatus.OK);
     }
 
-    @PutMapping("/update/{courseId}")
-    public ResponseEntity<?> update(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Valid CourseDTO courseDTO) {
+    @PutMapping("/{courseId}")
+    public ResponseEntity<?> updateCourse(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Valid CourseDTO courseDTO) {
         Optional<CourseModel> courseModel = this.courseService.findById(courseId);
         if (courseModel.isEmpty()) {
             return new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND);
@@ -60,12 +60,12 @@ public class CourseController {
         return new ResponseEntity<>(this.courseService.save(course), HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<CourseModel>> getAllCourses() {
         return new ResponseEntity<>(this.courseService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/getCourse/{courseId}")
+    @GetMapping("/{courseId}")
     public ResponseEntity<?> getCourse(@PathVariable(value = "courseId") UUID courseId) {
         Optional<CourseModel> courseModel = this.courseService.findById(courseId);
         return courseModel.isEmpty() ? new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND) : new ResponseEntity<>(courseModel.get(), HttpStatus.OK);

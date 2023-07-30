@@ -26,7 +26,7 @@ public class ModuleController {
     private final CourseService courseService;
 
     @PostMapping("/course/{courseId}/modules")
-    public ResponseEntity<?> save(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Valid ModuleDTO moduleDTO) {
+    public ResponseEntity<?> saveModule(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Valid ModuleDTO moduleDTO) {
 
         Optional<CourseModel> courseModel = this.courseService.findById(courseId);
         if (courseModel.isEmpty()) {
@@ -42,7 +42,7 @@ public class ModuleController {
     }
 
     @DeleteMapping("/course/{courseId}/modules/{moduleId}")
-    public ResponseEntity<?> delete(@PathVariable(value = "courseId") UUID courseId, @PathVariable(value = "moduleId") UUID moduleId) {
+    public ResponseEntity<?> deleteModule(@PathVariable(value = "courseId") UUID courseId, @PathVariable(value = "moduleId") UUID moduleId) {
 
         Optional<ModuleModel> moduleModelOptional = this.moduleService.findModuleIntoCourse(courseId, moduleId);
 
@@ -55,7 +55,7 @@ public class ModuleController {
     }
 
     @PutMapping("/course/{courseId}/modules/{moduleId}")
-    public ResponseEntity<?> update(@PathVariable(value = "courseId") UUID courseId, @PathVariable(value = "moduleId") UUID moduleId, @RequestBody @Valid ModuleDTO moduleDTO) {
+    public ResponseEntity<?> updateModule(@PathVariable(value = "courseId") UUID courseId, @PathVariable(value = "moduleId") UUID moduleId, @RequestBody @Valid ModuleDTO moduleDTO) {
         Optional<ModuleModel> moduleModelOptional = this.moduleService.findModuleIntoCourse(courseId, moduleId);
 
         if (moduleModelOptional.isEmpty()) {
