@@ -5,8 +5,13 @@ import com.ead.course.model.CourseModel;
 import com.ead.course.model.ModuleModel;
 import com.ead.course.service.CourseService;
 import com.ead.course.service.ModuleService;
+import com.ead.course.specification.SpecificationTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -70,8 +74,9 @@ public class ModuleController {
     }
 
     @GetMapping("/course/{courseId}/modules")
-    public ResponseEntity<List<ModuleModel>> getAllModules(@PathVariable(value = "courseId") UUID courseId) {
-        return new ResponseEntity<>(this.moduleService.findAllByCourse(courseId), HttpStatus.OK);
+    public ResponseEntity<Page<ModuleModel>> getAllModules(@PathVariable(value = "courseId") UUID courseId,
+                                                           SpecificationTemplate.ModuleSpec spec, @PageableDefault(sort = "moduleId", direction = Sort.Direction.ASC) Pageable pageable) {
+        return new ResponseEntity<>(this.moduleService.findAllByCourse(SpecificationTemplate.moduleCourseId(courseId).and(spec), pageable), HttpStatus.OK);
     }
 
     @GetMapping("/course/{courseId}/modules/{moduleId}")

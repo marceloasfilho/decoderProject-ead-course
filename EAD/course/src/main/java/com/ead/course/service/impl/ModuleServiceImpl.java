@@ -6,6 +6,9 @@ import com.ead.course.repository.LessonRepository;
 import com.ead.course.repository.ModuleRepository;
 import com.ead.course.service.ModuleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -47,5 +50,10 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public Optional<ModuleModel> findById(UUID moduleId) {
         return this.moduleRepository.findById(moduleId);
+    }
+
+    @Override
+    public Page<ModuleModel> findAllByCourse(Specification<ModuleModel> spec, Pageable pageable) {
+        return this.moduleRepository.findAll(spec, pageable);
     }
 }
