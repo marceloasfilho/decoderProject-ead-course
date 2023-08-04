@@ -3,7 +3,6 @@ package com.ead.course.controller;
 import com.ead.course.dto.CourseDTO;
 import com.ead.course.model.CourseModel;
 import com.ead.course.service.CourseService;
-import com.ead.course.specification.SpecificationTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -19,6 +18,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.ead.course.specification.SpecificationTemplate.CourseSpec;
+import static com.ead.course.specification.SpecificationTemplate.courseUserId;
 
 @RestController
 @RequestMapping("/course")
@@ -65,8 +67,20 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CourseModel>> getAllCourses(SpecificationTemplate.CourseSpec spec, @PageableDefault(sort = "courseId", direction = Sort.Direction.ASC) Pageable pageable) {
-        return new ResponseEntity<>(this.courseService.findAll(spec, pageable), HttpStatus.OK);
+    public ResponseEntity<Page<CourseModel>> getAllCourses(
+            CourseSpec spec,
+            @PageableDefault(sort = "courseId", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(required = false) UUID userId) {
+
+        Page<CourseModel> page;
+
+        if (userId != null) {
+            page = this.courseService.findAll(courseUserId(userId).and(spec), pageable);
+        } else {
+            page = this.courseService.findAll(spec, pageable);
+        }
+
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}")
