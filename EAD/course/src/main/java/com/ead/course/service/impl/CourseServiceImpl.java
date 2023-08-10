@@ -47,6 +47,7 @@ public class CourseServiceImpl implements CourseService {
         return this.courseRepository.save(courseModel);
     }
 
+    @Transactional
     @Override
     public Optional<CourseModel> findById(UUID courseId) {
         return this.courseRepository.findById(courseId);
