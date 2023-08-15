@@ -1,5 +1,6 @@
 package com.github.marceloasfilho.eadCourse.client;
 
+import com.github.marceloasfilho.eadCourse.dto.CourseUserDTO;
 import com.github.marceloasfilho.eadCourse.dto.ResponseGetAllUsersByCourseDTO;
 import com.github.marceloasfilho.eadCourse.dto.UserDTO;
 import com.github.marceloasfilho.eadCourse.service.UtilsService;
@@ -57,5 +58,11 @@ public class AuthuserClient {
         log.debug("Request URL: {}", url);
         log.info("Request URL: {}", url);
         return this.restTemplate.exchange(url, HttpMethod.GET, null, UserDTO.class);
+    }
+
+    public void saveAndSendEnrollmentUserInCourse(UUID courseId, UUID userId) {
+        String url = REQUEST_URI_API_AUTHUSER.concat(this.utilsService.createUrlSaveAndSendEnrollmentUserInCourse(courseId, userId));
+        var courseUserDTO = new CourseUserDTO(courseId, userId);
+        this.restTemplate.postForObject(url, courseUserDTO, String.class);
     }
 }

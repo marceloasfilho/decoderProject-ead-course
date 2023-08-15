@@ -79,7 +79,7 @@ public class CourseUserController {
         courseUserModel.setCourseModel(courseModel.get());
         courseUserModel.setUserId(Objects.requireNonNull(Objects.requireNonNull(userById).getBody()).getUserId());
 
-        CourseUserModel saved = this.courseUserService.save(courseUserModel);
+        CourseUserModel saved = this.courseUserService.saveAndSendEnrollmentUserInCourse(courseUserModel);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 }
