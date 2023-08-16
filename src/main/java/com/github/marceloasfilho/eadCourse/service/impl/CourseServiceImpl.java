@@ -1,12 +1,14 @@
 package com.github.marceloasfilho.eadCourse.service.impl;
 
-import com.github.marceloasfilho.eadCourse.service.CourseService;
 import com.github.marceloasfilho.eadCourse.model.CourseModel;
+import com.github.marceloasfilho.eadCourse.model.CourseUserModel;
 import com.github.marceloasfilho.eadCourse.model.LessonModel;
 import com.github.marceloasfilho.eadCourse.model.ModuleModel;
 import com.github.marceloasfilho.eadCourse.repository.CourseRepository;
+import com.github.marceloasfilho.eadCourse.repository.CourseUserRepository;
 import com.github.marceloasfilho.eadCourse.repository.LessonRepository;
 import com.github.marceloasfilho.eadCourse.repository.ModuleRepository;
+import com.github.marceloasfilho.eadCourse.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
+    private final CourseUserRepository courseUserRepository;
 
 
     @Transactional
@@ -38,6 +41,11 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
             this.moduleRepository.deleteAll(allModulesIntoCourse);
+
+            List<CourseUserModel> allCourseUserIntoCourse = this.courseUserRepository.findAllCourseUserIntoCourse(courseModel.getCourseId());
+            if (!allModulesIntoCourse.isEmpty()) {
+                this.courseUserRepository.deleteAll(allCourseUserIntoCourse);
+            }
         }
         this.courseRepository.delete(courseModel);
     }
