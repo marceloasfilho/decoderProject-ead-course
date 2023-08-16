@@ -4,6 +4,7 @@ import com.github.marceloasfilho.eadCourse.dto.CourseDTO;
 import com.github.marceloasfilho.eadCourse.model.CourseModel;
 import com.github.marceloasfilho.eadCourse.service.CourseService;
 import com.github.marceloasfilho.eadCourse.specification.SpecificationTemplate;
+import com.github.marceloasfilho.eadCourse.validation.CourseValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,9 +30,16 @@ import static com.github.marceloasfilho.eadCourse.specification.SpecificationTem
 @RequiredArgsConstructor
 public class CourseController {
     private final CourseService courseService;
+    private final CourseValidator courseValidator;
 
     @PostMapping
-    public ResponseEntity<?> saveCourse(@RequestBody @Valid CourseDTO courseDTO) {
+    public ResponseEntity<?> saveCourse(@RequestBody CourseDTO courseDTO, Errors errors) {
+
+        this.courseValidator.validate(courseDTO, errors);
+        if (errors.hasErrors()) {
+            return new ResponseEntity<>(errors.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
+
         var courseModel = new CourseModel();
         BeanUtils.copyProperties(courseDTO, courseModel);
         courseModel.setCreationDateTime(LocalDateTime.now(ZoneId.of("UTC")));
