@@ -29,4 +29,9 @@ public class UtilsServiceImpl implements UtilsService {
     public String createUrlSaveAndSendEnrollmentUserInCourse(UUID courseId, UUID userId) {
         return "/user/".concat(String.valueOf(userId)).concat("/courses/enroll");
     }
+
+    @Override
+    public String createUrlDeleteUserCourseIntoAuthuser(UUID courseId) {
+        return "/user/course/".concat(String.valueOf(courseId));
+    }
 }

@@ -24,10 +24,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Log4j2
 public class AuthuserClient {
-    @Value("${ead.api.url.authuser}")
-    private String REQUEST_URI_API_AUTHUSER;
     private final RestTemplate restTemplate;
     private final UtilsService utilsService;
+    @Value("${ead.api.url.authuser}")
+    private String REQUEST_URI_API_AUTHUSER;
 
     public Page<UserDTO> getAllUsersByCourse(UUID courseId, Pageable pageable) {
         String url = REQUEST_URI_API_AUTHUSER.concat(this.utilsService.createUrlGetAllUsersByCourse(courseId, pageable));
@@ -64,5 +64,10 @@ public class AuthuserClient {
         String url = REQUEST_URI_API_AUTHUSER.concat(this.utilsService.createUrlSaveAndSendEnrollmentUserInCourse(courseId, userId));
         var courseUserDTO = new CourseUserDTO(courseId, userId);
         this.restTemplate.postForObject(url, courseUserDTO, String.class);
+    }
+
+    public void deleteUserCourseIntoAuthuser(UUID courseId) {
+        String url = REQUEST_URI_API_AUTHUSER.concat(this.utilsService.createUrlDeleteUserCourseIntoAuthuser(courseId));
+        this.restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
     }
 }

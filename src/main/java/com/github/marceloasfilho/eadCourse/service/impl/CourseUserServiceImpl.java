@@ -34,4 +34,14 @@ public class CourseUserServiceImpl implements CourseUserService {
         this.authuserClient.saveAndSendEnrollmentUserInCourse(courseUserModel.getCourseModel().getCourseId(), courseUserModel.getUserId());
         return save;
     }
+
+    @Override
+    public boolean existsByUserId(UUID userId) {
+        return this.courseUserRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public void deleteCourseUserByUserId(UUID userId) {
+
+    }
 }

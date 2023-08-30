@@ -36,9 +36,14 @@ public class CourseUserController {
     private final CourseUserService courseUserService;
 
     @GetMapping("/{courseId}/users")
-    public ResponseEntity<Page<UserDTO>> getAllUsersByCourse(
+    public ResponseEntity<?> getAllUsersByCourse(
             @PageableDefault(sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
             @PathVariable(value = "courseId") UUID courseId) {
+
+        Optional<CourseModel> courseModel = this.courseService.findById(courseId);
+        if (courseModel.isEmpty()) {
+            return new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND);
+        }
 
         Page<UserDTO> allUsersByCourse = this.authuserClient.getAllUsersByCourse(courseId, pageable);
         return new ResponseEntity<>(allUsersByCourse, HttpStatus.OK);
@@ -56,8 +61,6 @@ public class CourseUserController {
         if (this.courseUserService.existByCourseAndUserId(courseModel.get(), enrollmentDTO.getUserId())) {
             return new ResponseEntity<>("Error: User already enrolled in this course", HttpStatus.CONFLICT);
         }
-
-        //todo verificação usuário ativo
 
         ResponseEntity<UserDTO> userById = null;
         try {
@@ -81,5 +84,15 @@ public class CourseUserController {
 
         CourseUserModel saved = this.courseUserService.saveAndSendEnrollmentUserInCourse(courseUserModel);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<?> deleteCourseUserByUserId(@PathVariable(value = "userId") UUID userId){
+        if (!this.courseUserService.existsByUserId(userId)){
+            return new ResponseEntity<>("CourseUser not found", HttpStatus.NOT_FOUND);
+        }
+
+        this.courseUserService.deleteCourseUserByUserId(userId);
+        return new ResponseEntity<>("CourseUser deleted successfully", HttpStatus.OK);
     }
 }

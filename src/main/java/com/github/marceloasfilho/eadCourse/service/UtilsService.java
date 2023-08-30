@@ -10,4 +10,6 @@ public interface UtilsService {
     String createUrlGetUserById(UUID userId);
 
     String createUrlSaveAndSendEnrollmentUserInCourse(UUID courseId, UUID userId);
+
+    String createUrlDeleteUserCourseIntoAuthuser(UUID courseId);
 }
