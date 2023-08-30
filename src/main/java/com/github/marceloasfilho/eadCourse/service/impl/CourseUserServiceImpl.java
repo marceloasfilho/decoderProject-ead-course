@@ -42,6 +42,6 @@ public class CourseUserServiceImpl implements CourseUserService {
 
     @Override
     public void deleteCourseUserByUserId(UUID userId) {
-
+        this.courseUserRepository.deleteAllByUserId(userId);
     }
 }

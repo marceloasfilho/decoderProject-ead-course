@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Objects;
 import java.util.Optional;
@@ -87,6 +88,7 @@ public class CourseUserController {
     }
 
     @DeleteMapping("/user/{userId}")
+    @Transactional
     public ResponseEntity<?> deleteCourseUserByUserId(@PathVariable(value = "userId") UUID userId){
         if (!this.courseUserService.existsByUserId(userId)){
             return new ResponseEntity<>("CourseUser not found", HttpStatus.NOT_FOUND);
