@@ -1,11 +1,13 @@
 package com.github.marceloasfilho.eadCourse.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -16,6 +18,20 @@ import java.util.UUID;
 public class UserModel implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userId;
+    @Column(length = 20)
+    private String cpf;
+    @Column(nullable = false, length = 150)
+    private String fullName;
+    @Column(nullable = false, unique = true, length = 50)
+    private String email;
+    @Column(nullable = false)
+    private String userType;
+    @Column(nullable = false)
+    private String userStatus;
+    @Column
+    private String imageUrl;
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Set<CourseModel> courses;
 }

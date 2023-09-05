@@ -22,6 +22,8 @@ import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.github.marceloasfilho.eadCourse.specification.SpecificationTemplate.courseUserId;
+
 @RestController
 @RequestMapping("/course")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -80,8 +82,11 @@ public class CourseController {
             @RequestParam(required = false) UUID userId) {
         // todo verificações de state transfer
 
-        Page<CourseModel> page = this.courseService.findAll(spec, pageable);
-        return new ResponseEntity<>(page, HttpStatus.OK);
+        if (userId != null) {
+            return new ResponseEntity<>(this.courseService.findAll(courseUserId(userId).and(spec), pageable), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(this.courseService.findAll(spec, pageable), HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{courseId}")

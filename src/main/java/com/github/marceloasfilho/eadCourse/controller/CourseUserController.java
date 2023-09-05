@@ -3,6 +3,8 @@ package com.github.marceloasfilho.eadCourse.controller;
 import com.github.marceloasfilho.eadCourse.dto.EnrollmentDTO;
 import com.github.marceloasfilho.eadCourse.model.CourseModel;
 import com.github.marceloasfilho.eadCourse.service.CourseService;
+import com.github.marceloasfilho.eadCourse.service.UserService;
+import com.github.marceloasfilho.eadCourse.specification.SpecificationTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,8 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.github.marceloasfilho.eadCourse.specification.SpecificationTemplate.userCourseId;
+
 @Log4j2
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,9 +28,11 @@ import java.util.UUID;
 public class CourseUserController {
 
     private final CourseService courseService;
+    private final UserService userService;
 
     @GetMapping("/{courseId}/users")
     public ResponseEntity<?> getAllUsersByCourse(
+            SpecificationTemplate.UserSpec userSpec,
             @PageableDefault(sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
             @PathVariable(value = "courseId") UUID courseId) {
         // todo verificações de state transfer
@@ -36,7 +42,7 @@ public class CourseUserController {
             return new ResponseEntity<>("Course not found", HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return new ResponseEntity<>(this.userService.findAll(userCourseId(courseId).and(userSpec), pageable), HttpStatus.OK);
     }
 
     @PostMapping("/{courseId}/users/enroll")
