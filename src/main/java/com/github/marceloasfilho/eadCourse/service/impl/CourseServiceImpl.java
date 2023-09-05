@@ -1,12 +1,9 @@
 package com.github.marceloasfilho.eadCourse.service.impl;
 
-import com.github.marceloasfilho.eadCourse.client.AuthuserClient;
 import com.github.marceloasfilho.eadCourse.model.CourseModel;
-import com.github.marceloasfilho.eadCourse.model.CourseUserModel;
 import com.github.marceloasfilho.eadCourse.model.LessonModel;
 import com.github.marceloasfilho.eadCourse.model.ModuleModel;
 import com.github.marceloasfilho.eadCourse.repository.CourseRepository;
-import com.github.marceloasfilho.eadCourse.repository.CourseUserRepository;
 import com.github.marceloasfilho.eadCourse.repository.LessonRepository;
 import com.github.marceloasfilho.eadCourse.repository.ModuleRepository;
 import com.github.marceloasfilho.eadCourse.service.CourseService;
@@ -27,15 +24,10 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
-    private final CourseUserRepository courseUserRepository;
-    private final AuthuserClient authuserClient;
-
 
     @Transactional
     @Override
     public void delete(CourseModel courseModel) {
-
-        boolean deleteUserCourseIntoAuthuser = false;
 
         List<ModuleModel> allModulesIntoCourse = this.moduleRepository.findAllModulesIntoCourse(courseModel.getCourseId());
         if (!allModulesIntoCourse.isEmpty()) {
@@ -46,18 +38,8 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
             this.moduleRepository.deleteAll(allModulesIntoCourse);
-
-            List<CourseUserModel> allCourseUserIntoCourse = this.courseUserRepository.findAllCourseUserIntoCourse(courseModel.getCourseId());
-            if (!allModulesIntoCourse.isEmpty()) {
-                deleteUserCourseIntoAuthuser = true;
-                this.courseUserRepository.deleteAll(allCourseUserIntoCourse);
-            }
         }
         this.courseRepository.delete(courseModel);
-
-        if (deleteUserCourseIntoAuthuser){
-            this.authuserClient.deleteUserCourseIntoAuthuser(courseModel.getCourseId());
-        }
     }
 
     @Override

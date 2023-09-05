@@ -1,28 +1,19 @@
 package com.github.marceloasfilho.eadCourse.validation;
 
-import com.github.marceloasfilho.eadCourse.client.AuthuserClient;
 import com.github.marceloasfilho.eadCourse.dto.CourseDTO;
-import com.github.marceloasfilho.eadCourse.dto.UserDTO;
-import com.github.marceloasfilho.eadCourse.enums.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.springframework.web.client.HttpStatusCodeException;
 
-import java.util.Objects;
 import java.util.UUID;
+
 @Component
 public class CourseValidator implements Validator {
     @Autowired
     @Qualifier("defaultValidator")
     Validator validator;
-
-    @Autowired
-    AuthuserClient authuserClient;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -39,7 +30,8 @@ public class CourseValidator implements Validator {
     }
 
     private void validateUserInstructor(UUID userInstructor, Errors errors) {
-        ResponseEntity<UserDTO> userById;
+        // todo verificações de state transfer
+        /* ResponseEntity<UserDTO> userById;
         try {
             userById = authuserClient.getUserById(userInstructor);
             if (Objects.requireNonNull(userById.getBody()).getUserType().equals(UserType.STUDENT)) {
@@ -50,5 +42,6 @@ public class CourseValidator implements Validator {
                 errors.rejectValue("userInstructor", "UserInstructorError", "ERROR: User not found");
             }
         }
+        */
     }
 }
